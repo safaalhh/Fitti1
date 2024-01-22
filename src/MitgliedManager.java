@@ -5,6 +5,8 @@ public class MitgliedManager {
     public ArrayList<Mitglied> mitgliedListe;
     public ArrayList<Kurs> kursListe;
 
+    private ArrayList<Kurs> kurse;
+
     //Constructor
     public MitgliedManager() {
         mitgliedListe = new ArrayList<Mitglied>();
@@ -12,8 +14,12 @@ public class MitgliedManager {
     }
 
     //Methoden
+    public void neuesMitgliedHinzufuegen(Mitglied mitglied) {
+        mitgliedListe.add(mitglied);
+    }
+
     public void neuesMitgliedAnlegen(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
-        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht); //tmp=temporär wird nur kurzzeitig in die Liste eingefügt und löscht sich danach von selbst, sobald es in der liste eingefügt wurde wird die kopie gelöscht
+        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht);
         mitgliedListe.add(tmpMitglied);
     }
 
@@ -29,11 +35,8 @@ public class MitgliedManager {
         mitgliedListe.remove(mitglied);
     }
 
-    public void kursloeschen(Kurs kurs) {
-        for (Mitglied mitglied : mitgliedListe) {
-            mitglied.abmeldenfuerKurs(kurs);
-        }
-        kursListe.remove(kurs);
+
+
+
     }
 
-}
