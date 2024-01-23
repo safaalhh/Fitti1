@@ -1,30 +1,30 @@
 import java.util.ArrayList;
 
 public class MitgliedManager {
-    //Attribute
+    // Attribute
     public ArrayList<Mitglied> mitgliedListe;
     public ArrayList<Kurs> kursListe;
 
     private ArrayList<Kurs> kurse;
 
-    //Constructor
+    // Constructor
     public MitgliedManager() {
         mitgliedListe = new ArrayList<Mitglied>();
         kursListe = new ArrayList<Kurs>();
     }
 
-    //Methoden
+    // Methoden
     public void neuesMitgliedHinzufuegen(Mitglied mitglied) {
         mitgliedListe.add(mitglied);
     }
 
-    public void neuesMitgliedAnlegen(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
-        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht);
+    public void neuesMitgliedAnlegen(int mitgliednummer, String name, String geburtsdatum, String geschlecht, String kurse) {
+        Mitglied tmpMitglied = new Mitglied(mitgliednummer, name, geburtsdatum, geschlecht, kurse);
         mitgliedListe.add(tmpMitglied);
     }
 
     public void neuenKursAnlegen(int Kursnummer, String Kursname) {
-        Kurs tmpKurs = new Kurs(Kursnummer, Kursname); //temp=temporär
+        Kurs tmpKurs = new Kurs(Kursnummer, Kursname); // temp=temporär
         kursListe.add(tmpKurs);
     }
 
@@ -35,8 +35,5 @@ public class MitgliedManager {
         mitgliedListe.remove(mitglied);
     }
 
-
-
-
-    }
+}
 

@@ -1,32 +1,37 @@
 import java.util.ArrayList;
 
 public class Mitglied {
-    private int mitgliedNummer;
+    private int Mitgliednummer;
     private String name;
     private String geburtsdatum;
     private String geschlecht;
     private ArrayList<Kurs> kurse;
 
     // Konstruktor
-    public Mitglied(int mitgliedNummer, String name, String geburtsdatum, String geschlecht) {
-        this.mitgliedNummer = mitgliedNummer;
-        this.name = name;
-        this.geburtsdatum = geburtsdatum;
-        this.geschlecht = geschlecht;
+    public Mitglied(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht, String kurseField) {
+        this.Mitgliednummer = Mitgliednummer;
+        this.name = Name;
+        this.geburtsdatum = Geburtsdatum;
+        this.geschlecht = Geschlecht;
         this.kurse = new ArrayList<>();
     }
 
-    public Mitglied(String mitgliedNummer, String name, String geburtsdatum, String geschlecht, String kurse) {
-        this.mitgliedNummer = Integer.parseInt(mitgliedNummer);
+    public void setMitgliedNummer(int mitgliedNummer) {
+        this.Mitgliednummer = mitgliedNummer;
+    }
+    public void setName(String name) {
         this.name = name;
+    }
+    public void setGeburtsdatum(String geburtsdatum) {
         this.geburtsdatum = geburtsdatum;
+    }
+    public void setGeschlecht(String geschlecht) {
         this.geschlecht = geschlecht;
-        this.kurse = new ArrayList<>();
     }
 
     // Getter-Methoden
     public int getMitgliedNummer() {
-        return mitgliedNummer;
+        return Mitgliednummer;
     }
 
     public String getName() {
@@ -56,7 +61,7 @@ public class Mitglied {
 
     @Override
     public String toString() {
-        return "Mitgliedsnummer: " + mitgliedNummer + ", Name: " + name + ", Geburtsdatum: " + geburtsdatum +
+        return "Mitgliedsnummer: " + Mitgliednummer + ", Name: " + name + ", Geburtsdatum: " + geburtsdatum +
                 ", Geschlecht: " + geschlecht + ", Fitnesskurse: " + kurse;
     }
 }
