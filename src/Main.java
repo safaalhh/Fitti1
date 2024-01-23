@@ -3,21 +3,30 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 
 public class Main {
     private JList<String> mitgliederListe;
     private DefaultListModel<String> mitgliederListModel;
     private MitgliedManager mitgliederManager;
     private ArrayList<Mitglied> mitglieder;
+    private ArrayList<Kurs> kurse; // Liste für Kurse
+
     private JButton mitgliederButton;
     private JButton kurseButton;
     private JFrame mainFrame;
+
     private String[] geschlechtOptions = { "m", "w" };
 
     public Main() {
         mitgliederManager = new MitgliedManager();
-        mitglieder = new ArrayList<Mitglied>();
+        mitglieder = new ArrayList<>();
+        kurse = new ArrayList<>(); // Initialisierung Kursliste
 
         mainFrame = new JFrame("FitFirst");
         mitgliederButton = new JButton("Mitglieder");
@@ -149,7 +158,7 @@ public class Main {
             JTextField kurseField = new JTextField();
 
             for (Kurs kurs : selectedMitglied.getKurse()) {
-                kurseField.setText(kurseField.getText() + kurs.getKursname() + ", ");
+                kurseField.setText(kurseField.getText() + kurs.getName() + ", ");
 
             }
             speicherButton.addActionListener(new ActionListener() {
@@ -273,6 +282,8 @@ public class Main {
         JFrame kurseFrame = new JFrame("Kurse");
         JButton kurseAnzeigenButton = new JButton("Kurse anzeigen");
         JButton kurseHinzufuegenButton = new JButton("Kurse hinzufügen");
+        JButton kurseBearbeitenButton = new JButton("Kurse bearbeiten");
+        JButton kurseLoeschenButton = new JButton("Kurse löschen");
         JButton closeButton = new JButton("Zurück");
 
         kurseAnzeigenButton.addActionListener(new ActionListener() {
@@ -286,6 +297,20 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 openkurseHinzufuegenWindow();
+            }
+        });
+
+        kurseBearbeitenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bearbeiteKurs();
+            }
+        });
+
+        kurseLoeschenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loescheKurs();
             }
         });
 
@@ -310,6 +335,8 @@ public class Main {
     private void openkurseAnzeigenWindow() {
         JFrame kurseAnzeigenFrame = new JFrame("Kurse - Kurse anzeigen");
         JButton closeButton = new JButton("Zurück");
+        JButton bearbeitenButton = new JButton("Kurs bearbeiten");
+        JButton loeschenButton = new JButton("Kurs löschen");
 
         closeButton.addActionListener(new ActionListener() {
             @Override
@@ -318,8 +345,31 @@ public class Main {
             }
         });
 
-        JPanel kursePanel = new JPanel();
-        kursePanel.add(closeButton);
+        bearbeitenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bearbeiteKurs();
+            }
+        });
+
+        loeschenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loescheKurs();
+            }
+        });
+
+        mitgliederListModel = new DefaultListModel<>();
+        mitgliederListe = new JList<>(mitgliederListModel);
+        mitgliederListe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JPanel kursePanel = new JPanel(new BorderLayout());
+        kursePanel.add(new JScrollPane(mitgliederListe), BorderLayout.CENTER);
+        kursePanel.add(bearbeitenButton, BorderLayout.WEST);
+        kursePanel.add(loeschenButton, BorderLayout.EAST);
+        kursePanel.add(closeButton, BorderLayout.SOUTH);
+
+        updateKurseListe();
 
         kurseAnzeigenFrame.getContentPane().add(kursePanel);
         kurseAnzeigenFrame.setSize(700, 500);
@@ -327,44 +377,108 @@ public class Main {
         kurseAnzeigenFrame.setVisible(true);
     }
 
-    private void openkurseHinzufuegenWindow() {
-        JFrame kurseHinzufuegenFrame = new JFrame("Kurse - Kurse hinzufügen");
-        JButton hinzufuegenButton = new JButton("Hinzufügen");
-        JButton closeButton = new JButton("Zurück");
+private void openkurseHinzufuegenWindow() {
+    JFrame kurseHinzufuegenFrame = new JFrame("Kurse - Kurse hinzufügen");
+    JButton hinzufuegenButton = new JButton("Hinzufügen");
+    JButton closeButton = new JButton("Zurück");
 
-        JTextField nameField = new JTextField(20);
-        JTextField beschreibungField = new JTextField(20);
+    JTextField nameField = new JTextField(20);
+    JTextField beschreibungField = new JTextField(20);
 
-        hinzufuegenButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String beschreibung = beschreibungField.getText();
-            }
-        });
+    hinzufuegenButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Kurs newKurs = new Kurs(nameField.getText(), beschreibungField.getText());
+            kurse.add(newKurs);
 
-        closeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                kurseHinzufuegenFrame.dispose();
-            }
-        });
+            kurseHinzufuegenFrame.dispose();
+        }
+    });
+
+    closeButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            kurseHinzufuegenFrame.dispose();
+        }
+    });
 
         JPanel kursePanel = new JPanel();
         kursePanel.add(closeButton);
 
-        JPanel kurseHinzufuegenPanel = new JPanel(new GridLayout(6, 2));
-        kurseHinzufuegenPanel.add(new JLabel("Name:"));
-        kurseHinzufuegenPanel.add(nameField);
-        kurseHinzufuegenPanel.add(new JLabel("Beschreibung:"));
-        kurseHinzufuegenPanel.add(beschreibungField);
-        kurseHinzufuegenPanel.add(hinzufuegenButton);
-        kurseHinzufuegenPanel.add(closeButton);
+    JPanel kurseHinzufuegenPanel = new JPanel(new GridLayout(6, 2));
+    kurseHinzufuegenPanel.add(new JLabel("Name:"));
+    kurseHinzufuegenPanel.add(nameField);
+    kurseHinzufuegenPanel.add(new JLabel("Beschreibung:"));
+    kurseHinzufuegenPanel.add(beschreibungField);
+    kurseHinzufuegenPanel.add(hinzufuegenButton);
+    kurseHinzufuegenPanel.add(closeButton);
 
-        kurseHinzufuegenFrame.getContentPane().add(kurseHinzufuegenPanel);
-        kurseHinzufuegenFrame.setSize(500, 500);
-        kurseHinzufuegenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        kurseHinzufuegenFrame.setVisible(true);
+    kurseHinzufuegenFrame.getContentPane().add(kurseHinzufuegenPanel);
+    kurseHinzufuegenFrame.setSize(500, 500);
+    kurseHinzufuegenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    kurseHinzufuegenFrame.setVisible(true);
+    }
+
+    private void bearbeiteKurs() {
+        int selectedIndex = mitgliederListe.getSelectedIndex();
+
+        if (selectedIndex != -1) {
+            Kurs selectedKurs = kurse.get(selectedIndex);
+
+            JFrame bearbeitenFrame = new JFrame("Kurs bearbeiten");
+            JButton speicherButton = new JButton("Speichern");
+            JButton closeButton = new JButton("Abbrechen");
+
+            JTextField nameField = new JTextField(selectedKurs.getName());
+            JTextField beschreibungField = new JTextField(selectedKurs.getBeschreibung());
+
+            speicherButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    selectedKurs.setKursname(nameField.getText());
+                    selectedKurs.setBeschreibung(beschreibungField.getText());
+
+                    bearbeitenFrame.dispose();
+                    updateKurseListe();
+                }
+            });
+
+            closeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    bearbeitenFrame.dispose();
+                }
+            });
+
+            JPanel bearbeitenPanel = new JPanel(new GridLayout(4, 2));
+            bearbeitenPanel.add(new JLabel("Name:"));
+            bearbeitenPanel.add(nameField);
+            bearbeitenPanel.add(new JLabel("Beschreibung:"));
+            bearbeitenPanel.add(beschreibungField);
+            bearbeitenPanel.add(speicherButton);
+            bearbeitenPanel.add(closeButton);
+
+            bearbeitenFrame.getContentPane().add(bearbeitenPanel);
+            bearbeitenFrame.setSize(500, 500);
+            bearbeitenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            bearbeitenFrame.setVisible(true);
+        }
+    }
+
+    private void loescheKurs() {
+        int selectedIndex = mitgliederListe.getSelectedIndex();
+
+        if (selectedIndex != -1) {
+            kurse.remove(selectedIndex);
+            updateKurseListe();
+        }
+    }
+
+    private void updateKurseListe() {
+        mitgliederListModel.clear();
+        for (Kurs kurs : kurse) {
+            mitgliederListModel.addElement(kurs.toString());
+    }
     }
 
     public static void main(String[] args) {
