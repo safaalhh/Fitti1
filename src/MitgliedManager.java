@@ -23,8 +23,8 @@ public class MitgliedManager {
         mitgliedListe.add(tmpMitglied);
     }
 
-    public void neuenKursAnlegen(int Kursnummer, String Kursname) {
-        Kurs tmpKurs = new Kurs(Kursnummer, Kursname); // temp=temporär
+    public void neuenKursAnlegen(String Kursname, String Beschreibung) {
+        Kurs tmpKurs = new Kurs(Kursname,Beschreibung); // temp=temporär
         kursListe.add(tmpKurs);
     }
 

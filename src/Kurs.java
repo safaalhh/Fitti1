@@ -2,16 +2,16 @@ import java.util.ArrayList;
 
 public class Kurs {
 
-    public int kursnummer; // Attribute (Eigenschaften) der Klasse
-    public String kursname;
+    private String name; // Attribute (Eigenschaften) der Klasse
+    private String Beschreibung;
 
     public ArrayList<Mitglied> kursMitgliederListe;
 
 
-    public Kurs(int Kursnummer, String Kursname) { // konstruktor der die objekte ausführt
-        this.kursnummer = Kursnummer; // trägt die objekte ein
-        this.kursname = Kursname;
-        this.kursMitgliederListe = new ArrayList<Mitglied>(); // Liste wird initialisiert
+
+    public Kurs(String name, String beschreibung) {
+        this.name = name;
+        this.Beschreibung = beschreibung;
     }
 
     public void mitgliedHinzufuegen(Mitglied mitglied) {
@@ -22,13 +22,24 @@ public class Kurs {
         kursMitgliederListe.remove(mitglied);
     }
 
-    public String getKursname() { // ist das notwendig? - vielleicht
-        return kursname;
+    public String getName() { // ist das notwendig? - vielleicht
+        return name;
     }
 
-    public void setKursname(String neuerKursname) { //set ist immer void
-        this.kursname = neuerKursname; //mit this greife ich auf das Attribut kursname zu was verändert werden soll
+    public String getBeschreibung() {
+        return Beschreibung;
     }
+    public String toString() {
+        return "Kurs: " + name + " - " + Beschreibung;
+    }
+
+    public void setKursname(String name) { //set ist immer void
+        this.name = name; //mit this greife ich auf das Attribut kursname zu was verändert werden soll
+    }
+    public void setBeschreibung(String beschreibung) {
+        this.Beschreibung = beschreibung;
+    }
+
 
     public ArrayList<Mitglied> getKursMitgliederListe() { //Liste soll zurückgegeben werden deswegen return, anstelle von Kursanzeigen weil kein Sinn so
         return kursMitgliederListe;
