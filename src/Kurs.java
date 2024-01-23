@@ -14,12 +14,12 @@ public class Kurs {
 
     public void mitgliedHinzufuegen(Mitglied mitglied) {
         teilnehmer.add(mitglied);
-        mitglied.anmeldenFürKurs(this);
+        mitglied.anmeldenFuerKurs(this);
     }
 
     public void mitgliedEntfernen(Mitglied mitglied) {
         teilnehmer.remove(mitglied);
-        mitglied.abmeldenFürKurs(this);
+        mitglied.abmeldenFuerKurs(this);
     }
 
     public String getName() {

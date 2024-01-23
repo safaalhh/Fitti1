@@ -5,26 +5,29 @@ public class Mitglied {
     private String name;
     private String geburtsdatum;
     private String geschlecht;
-    private ArrayList<Kurs> kurse;
+    private ArrayList<Kurs> kurse; //in eckigen klammer steht was in die Liste annimmt
 
     // Konstruktor
-    public Mitglied(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht, String kurseField) {
+    public Mitglied(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
         this.Mitgliednummer = Mitgliednummer;
         this.name = Name;
         this.geburtsdatum = Geburtsdatum;
         this.geschlecht = Geschlecht;
-        this.kurse = new ArrayList<>();
+        this.kurse = new ArrayList<Kurs>();
     }
 
     public void setMitgliedNummer(int mitgliedNummer) {
         this.Mitgliednummer = mitgliedNummer;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public void setGeburtsdatum(String geburtsdatum) {
         this.geburtsdatum = geburtsdatum;
     }
+
     public void setGeschlecht(String geschlecht) {
         this.geschlecht = geschlecht;
     }
@@ -55,11 +58,11 @@ public class Mitglied {
     }
 
     // Weitere Methoden
-    public void anmeldenFürKurs(Kurs kurs) {
+    public void anmeldenFuerKurs(Kurs kurs) {
         kurse.add(kurs);
     }
 
-    public void abmeldenFürKurs(Kurs kurs) {
+    public void abmeldenFuerKurs(Kurs kurs) {
         kurse.remove(kurs);
     }
 

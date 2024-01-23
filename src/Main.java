@@ -11,13 +11,10 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 public class Main {
-    private ArrayList<Kurs> kurse;
     private ArrayList<Kurs> selectedKurse = new ArrayList<>();
     private JList<String> mitgliederListe;
     private DefaultListModel<String> mitgliederListModel;
     private MitgliedManager mitgliederManager;
-    private ArrayList<Mitglied> mitglieder;
-
 
     private JButton mitgliederButton;
     private JButton kurseButton;
@@ -27,8 +24,8 @@ public class Main {
 
     public Main() {
         mitgliederManager = new MitgliedManager();
-        mitglieder = new ArrayList<>();
-        kurse = new ArrayList<>(); // Initialisierung Kursliste
+       // mitglieder = new ArrayList<>();
+       // kurse = new ArrayList<>(); // Initialisierung Kursliste
 
         mainFrame = new JFrame("FitFirst");
         mitgliederButton = new JButton("Mitglieder");
@@ -146,7 +143,7 @@ public class Main {
         int selectedIndex = mitgliederListe.getSelectedIndex();
 
         if (selectedIndex != -1) {
-            Mitglied selectedMitglied = mitglieder.get(selectedIndex);
+            Mitglied selectedMitglied = mitgliederManager.getMitgliedListe().get(selectedIndex);
 
             JFrame bearbeitenFrame = new JFrame("Mitglieder bearbeiten");
             JButton speicherButton = new JButton("Speichern");
@@ -209,15 +206,14 @@ public class Main {
 
         int selectedIndex = mitgliederListe.getSelectedIndex();
 
-        Mitglied deletedMitglied = mitglieder.remove(selectedIndex);
+        Mitglied deletedMitglied = mitgliederManager.getMitgliedListe().get(selectedIndex);
         mitgliederManager.mitgliedLoeschen(deletedMitglied);
         updateMitgliederListe();
-
     }
 
     private void updateMitgliederListe() {
         mitgliederListModel.clear();
-        for (Mitglied mitglied : mitglieder) {
+        for (Mitglied mitglied : mitgliederManager.getMitgliedListe()) {
             mitgliederListModel.addElement(mitglied.toString());
         }
     }
@@ -237,29 +233,24 @@ public class Main {
         hinzufuegenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Mitglied newMitglied = new Mitglied(
+               Mitglied newMitglied = mitgliederManager.neuesMitgliedHinzufuegen(
                         Integer.parseInt(mitgliedNummerField.getText()),
                         nameField.getText(),
                         geburtsdatumField.getText(),
-                        (String) geschlechtComboBox.getSelectedItem(),
-                        kurseField.getText()
+                        (String) geschlechtComboBox.getSelectedItem()
                 );
-
                 for (Kurs kurs : selectedKurse) {
-                    newMitglied.kursBeitreten(kurs);
+                    mitgliederManager.mitgliedZuKursHinzufuegen(newMitglied,kurs);
                 }
-
-                mitglieder.add(newMitglied);
 
                 mitgliederHinzufuegenFrame.dispose();
 
                 updateMitgliederListe();
-                mitgliederManager.neuesMitgliedHinzufuegen(newMitglied);
             }
         });
 
         JComboBox<String> kurseComboBox = new JComboBox<>();
-        for (Kurs kurs : kurse) {
+        for (Kurs kurs : mitgliederManager.getKursListe()) {
             kurseComboBox.addItem(kurs.getName());
         }
 
@@ -267,7 +258,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedKursName = (String) kurseComboBox.getSelectedItem();
-                selectedKurse.add(getKursByName(selectedKursName));
+                selectedKurse.add(mitgliederManager.getKursByName(selectedKursName));
             }
         });
 
@@ -301,14 +292,7 @@ public class Main {
         mitgliederHinzufuegenFrame.setVisible(true);
     }
 
-    private Kurs getKursByName(String kursName) {
-        for (Kurs kurs : kurse) {
-            if (kurs.getName().equals(kursName)) {
-                return kurs;
-            }
-        }
-        return null;
-    }
+
     private void openKurseWindow() {
         JFrame kurseFrame = new JFrame("Kurse");
         JButton kurseAnzeigenButton = new JButton("Kurse anzeigen");
@@ -419,9 +403,7 @@ public class Main {
         hinzufuegenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Kurs newKurs = new Kurs(nameField.getText(), beschreibungField.getText());
-                kurse.add(newKurs);
-
+                mitgliederManager.neuenKursAnlegen(nameField.getText(), beschreibungField.getText());
                 kurseHinzufuegenFrame.dispose();
             }
         });
@@ -454,7 +436,7 @@ public class Main {
         int selectedIndex = mitgliederListe.getSelectedIndex();
 
         if (selectedIndex != -1) {
-            Kurs selectedKurs = kurse.get(selectedIndex);
+            Kurs selectedKurs = mitgliederManager.getKursListe().get(selectedIndex);
 
             JFrame bearbeitenFrame = new JFrame("Kurs bearbeiten");
             JButton speicherButton = new JButton("Speichern");
@@ -500,14 +482,15 @@ public class Main {
         int selectedIndex = mitgliederListe.getSelectedIndex();
 
         if (selectedIndex != -1) {
-            kurse.remove(selectedIndex);
+            Kurs selectedKurs=mitgliederManager.getKursListe().get(selectedIndex);
+            mitgliederManager.kursloeschen(selectedKurs);
             updateKurseListe();
         }
     }
 
     private void updateKurseListe() {
         mitgliederListModel.clear();
-        for (Kurs kurs : kurse) {
+        for (Kurs kurs : mitgliederManager.getKursListe()) {
             mitgliederListModel.addElement(kurs.toString());
         }
     }
@@ -516,14 +499,14 @@ public class Main {
         int selectedIndex = mitgliederListe.getSelectedIndex();
 
         if (selectedIndex != -1) {
-            Mitglied selectedMitglied = mitglieder.get(selectedIndex);
+            Mitglied selectedMitglied = mitgliederManager.getMitgliedListe().get(selectedIndex);
 
             JFrame zuKursHinzufuegenFrame = new JFrame("Mitglied zu Kurs hinzufügen");
             JButton hinzufuegenButton = new JButton("Hinzufügen");
             JButton closeButton = new JButton("Abbrechen");
 
             JComboBox<String> kurseComboBox = new JComboBox<>();
-            for (Kurs kurs : kurse) {
+            for (Kurs kurs : mitgliederManager.getKursListe()) {
                 kurseComboBox.addItem(kurs.getName());
             }
 
@@ -532,7 +515,8 @@ public class Main {
                 public void actionPerformed(ActionEvent e) {
                     int selectedKursIndex = kurseComboBox.getSelectedIndex();
                     if (selectedKursIndex != -1) {
-                        Kurs selectedKurs = kurse.get(selectedKursIndex);
+                        Kurs selectedKurs = mitgliederManager.getKursListe().get(selectedKursIndex);
+                        mitgliederManager.mitgliedZuKursHinzufuegen(selectedMitglied,selectedKurs);
                         selectedMitglied.kursBeitreten(selectedKurs);
                         zuKursHinzufuegenFrame.dispose();
 

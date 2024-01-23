@@ -1,23 +1,37 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MitgliedManager {
     // Attribute
-    public ArrayList<Mitglied> mitgliedListe;
-    public ArrayList<Kurs> kursListe;
-    private String filename = "Mitglieder.csv";
-
+    private ArrayList<Mitglied> mitgliedListe;
+    private ArrayList<Kurs> kursListe;
+    private String filename;
 
     // Constructor
     public MitgliedManager() {
         mitgliedListe = new ArrayList<Mitglied>();
         kursListe = new ArrayList<Kurs>();
+        filename = "Mitglieder.csv";
     }
-
     // Methoden
-    public void neuesMitgliedHinzufuegen(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
-        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht);
+    public ArrayList<Mitglied> getMitgliedListe(){
+        return mitgliedListe;
+    }
+
+    public ArrayList<Kurs> getKursListe(){
+        return kursListe;
+    }
+
+    public Mitglied neuesMitgliedHinzufuegen(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
+        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht); //Parameter?
         mitgliedListe.add(tmpMitglied);
-        this.mitgliedInCsvSpeichern(tmpMitglied); // Use tmpMitglied instead of newMitglied
+        //this.mitgliedInCsvSpeichern(tmpMitglied);
+        return tmpMitglied;
+    }
+
+    public void neuesMitgliedHinzufuegen(Mitglied mitglied){
+        mitgliedListe.add(mitglied);
+       // this.mitgliedInCsvSpeichern(mitglied);
     }
 
 
@@ -28,48 +42,58 @@ public class MitgliedManager {
         mitgliedListe.remove(mitglied);
     }
 
-
+    public Kurs getKursByName(String kursName) {
+        for (Kurs kurs : kursListe) {
+            if (kurs.getName().equals(kursName)) {
+                return kurs;
+            }
+        }
+        return null;
+    }
     private void updateMitglieder() {
-        mitgliedListe.clear();
         ArrayList<ArrayList<String>> rawMitglieder = CsvReader.readCSVFile(filename);
-        lstIntoTickets(rawMitglieder);
+        //lstIntoTickets(rawMitglieder);
     }
 
-    public void mitgliedLoeschen(Mitglied mitglied) {
-        for (Kurs kurs : kursListe) {
-            kurs.mitgliedEntfernen(mitglied);
+    public void neuenKursAnlegen(String Kursname,String beschreibung) {
+        Kurs tmpKurs = new Kurs(Kursname, beschreibung);
+        kursListe.add(tmpKurs);
+       //this.kursInCsvSpeichern(newKurs);
+    }
+
+
+    public void kursloeschen(Kurs kurs) {
+        for (Mitglied mitglied : mitgliedListe) {
+            mitglied.abmeldenFuerKurs(kurs);
         }
-        mitgliedListe.remove(mitglied);
+        kursListe.remove(kurs);
     }
 
-            public void neuenKursAnlegen(int Kursnummer, String Kursname) {
-                Kurs tmpKurs = new Kurs(Kursnummer, Kursname); //temp=temporär
-                kursListe.add(tmpKurs);
-                this.kursInCsvSpeichern(newKurs);
-            }
-
-
-            public void kursloeschen(Kurs kurs) {
-                for (Mitglied mitglied : mitgliedListe) {
-                    mitglied.abmeldenfuerKurs(kurs);
-                }
-                kursListe.remove(kurs);
-            }
-    private void mitgliedInCsvSpeichern(Mitglied mitglied) {
+    /**public void mitgliedInCsvSpeichern(Mitglied mitglied) {
         Mitglied matchingMitglied = this.getMitgliedWithSameId(Integer.toString(mitglied.getMitgliedId()));
 
         if (matchingMitglied == null) {
-            mitgliedListe.add(mitglied);
+            mitglieder.add(mitglied);
         } else {
-            mitgliedListe.remove(matchingMitglied);
-            mitgliedListe.add(mitglied);
+            mitglieder.remove(matchingMitglied);
+            mitglieder.add(mitglied);
         }
-        CsvReader.updateCsv(filename, mitgliedIntoLst());
-    }
-    public void neuesMitgliedHinzufuegen(Mitglied mitglied) {
+        CsvReader.updateCsv(filename, mitgliederIntoLst());
+    }*/
 
-    }
+    public void mitgliedZuKursHinzufuegen(Mitglied selectedMitglied, Kurs selectedKurs) {
+        for (Mitglied mitglied: mitgliedListe){
+            if (mitglied.getMitgliedNummer()==selectedMitglied.getMitgliedNummer() && Objects.equals(mitglied.getName(), selectedMitglied.getName())){
+                mitglied.anmeldenFuerKurs(selectedKurs);
 
+            }
+        }
+        for (Kurs kurs:kursListe){
+            if (Objects.equals(kurs.getName(), selectedKurs.getName())){
+                kurs.mitgliedHinzufuegen(selectedMitglied);
+            }
+        }
+    }
 }
 
 
