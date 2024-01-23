@@ -12,9 +12,7 @@ public class Main {
     private ArrayList<Mitglied> mitglieder;
     private JButton mitgliederButton;
     private JButton kurseButton;
-    private JButton mitgliederAnzeigenButton;
     private JFrame mainFrame;
-    private JComboBox<String> comboBox1;
     private String[] geschlechtOptions = { "m", "w" };
 
     public Main() {
