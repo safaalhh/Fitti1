@@ -11,17 +11,19 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 public class Main {
+    private ArrayList<Kurs> kurse;
+    private ArrayList<Kurs> selectedKurse = new ArrayList<>();
     private JList<String> mitgliederListe;
     private DefaultListModel<String> mitgliederListModel;
     private MitgliedManager mitgliederManager;
     private ArrayList<Mitglied> mitglieder;
-    private ArrayList<Kurs> kurse; // Liste für Kurse
+
 
     private JButton mitgliederButton;
     private JButton kurseButton;
     private JFrame mainFrame;
 
-    private String[] geschlechtOptions = { "m", "w" };
+    private String[] geschlechtOptions = {"m", "w"};
 
     public Main() {
         mitgliederManager = new MitgliedManager();
@@ -226,7 +228,8 @@ public class Main {
         JButton hinzufuegenButton = new JButton("Hinzufügen");
         JButton closeButton = new JButton("Zurück");
 
-        JTextField mitgliedNummerField = new JTextField(20);        JTextField nameField = new JTextField(20);
+        JTextField mitgliedNummerField = new JTextField(20);
+        JTextField nameField = new JTextField(20);
         JTextField geburtsdatumField = new JTextField(20);
         JComboBox<String> geschlechtComboBox = new JComboBox<>(geschlechtOptions);
         JTextField kurseField = new JTextField(20);
@@ -242,6 +245,10 @@ public class Main {
                         kurseField.getText()
                 );
 
+                for (Kurs kurs : selectedKurse) {
+                    newMitglied.kursBeitreten(kurs);
+                }
+
                 mitglieder.add(newMitglied);
 
                 mitgliederHinzufuegenFrame.dispose();
@@ -250,6 +257,22 @@ public class Main {
                 mitgliederManager.neuesMitgliedHinzufuegen(newMitglied);
             }
         });
+
+        JComboBox<String> kurseComboBox = new JComboBox<>();
+        for (Kurs kurs : kurse) {
+            kurseComboBox.addItem(kurs.getName());
+        }
+
+        kurseComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedKursName = (String) kurseComboBox.getSelectedItem();
+                selectedKurse.add(getKursByName(selectedKursName));
+            }
+        });
+
+
+
 
         closeButton.addActionListener(new ActionListener() {
             @Override
@@ -268,7 +291,7 @@ public class Main {
         mitgliederHinzufuegenPanel.add(new JLabel("Geschlecht:"));
         mitgliederHinzufuegenPanel.add(geschlechtComboBox);
         mitgliederHinzufuegenPanel.add(new JLabel("Fitnesskurse:"));
-        mitgliederHinzufuegenPanel.add(kurseField);
+        mitgliederHinzufuegenPanel.add(kurseComboBox);
         mitgliederHinzufuegenPanel.add(hinzufuegenButton);
         mitgliederHinzufuegenPanel.add(closeButton);
 
@@ -278,6 +301,14 @@ public class Main {
         mitgliederHinzufuegenFrame.setVisible(true);
     }
 
+    private Kurs getKursByName(String kursName) {
+        for (Kurs kurs : kurse) {
+            if (kurs.getName().equals(kursName)) {
+                return kurs;
+            }
+        }
+        return null;
+    }
     private void openKurseWindow() {
         JFrame kurseFrame = new JFrame("Kurse");
         JButton kurseAnzeigenButton = new JButton("Kurse anzeigen");
@@ -377,46 +408,46 @@ public class Main {
         kurseAnzeigenFrame.setVisible(true);
     }
 
-private void openkurseHinzufuegenWindow() {
-    JFrame kurseHinzufuegenFrame = new JFrame("Kurse - Kurse hinzufügen");
-    JButton hinzufuegenButton = new JButton("Hinzufügen");
-    JButton closeButton = new JButton("Zurück");
+    private void openkurseHinzufuegenWindow() {
+        JFrame kurseHinzufuegenFrame = new JFrame("Kurse - Kurse hinzufügen");
+        JButton hinzufuegenButton = new JButton("Hinzufügen");
+        JButton closeButton = new JButton("Zurück");
 
-    JTextField nameField = new JTextField(20);
-    JTextField beschreibungField = new JTextField(20);
+        JTextField nameField = new JTextField(20);
+        JTextField beschreibungField = new JTextField(20);
 
-    hinzufuegenButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Kurs newKurs = new Kurs(nameField.getText(), beschreibungField.getText());
-            kurse.add(newKurs);
+        hinzufuegenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Kurs newKurs = new Kurs(nameField.getText(), beschreibungField.getText());
+                kurse.add(newKurs);
 
-            kurseHinzufuegenFrame.dispose();
-        }
-    });
+                kurseHinzufuegenFrame.dispose();
+            }
+        });
 
-    closeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            kurseHinzufuegenFrame.dispose();
-        }
-    });
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                kurseHinzufuegenFrame.dispose();
+            }
+        });
 
         JPanel kursePanel = new JPanel();
         kursePanel.add(closeButton);
 
-    JPanel kurseHinzufuegenPanel = new JPanel(new GridLayout(6, 2));
-    kurseHinzufuegenPanel.add(new JLabel("Name:"));
-    kurseHinzufuegenPanel.add(nameField);
-    kurseHinzufuegenPanel.add(new JLabel("Beschreibung:"));
-    kurseHinzufuegenPanel.add(beschreibungField);
-    kurseHinzufuegenPanel.add(hinzufuegenButton);
-    kurseHinzufuegenPanel.add(closeButton);
+        JPanel kurseHinzufuegenPanel = new JPanel(new GridLayout(6, 2));
+        kurseHinzufuegenPanel.add(new JLabel("Name:"));
+        kurseHinzufuegenPanel.add(nameField);
+        kurseHinzufuegenPanel.add(new JLabel("Beschreibung:"));
+        kurseHinzufuegenPanel.add(beschreibungField);
+        kurseHinzufuegenPanel.add(hinzufuegenButton);
+        kurseHinzufuegenPanel.add(closeButton);
 
-    kurseHinzufuegenFrame.getContentPane().add(kurseHinzufuegenPanel);
-    kurseHinzufuegenFrame.setSize(500, 500);
-    kurseHinzufuegenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    kurseHinzufuegenFrame.setVisible(true);
+        kurseHinzufuegenFrame.getContentPane().add(kurseHinzufuegenPanel);
+        kurseHinzufuegenFrame.setSize(500, 500);
+        kurseHinzufuegenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kurseHinzufuegenFrame.setVisible(true);
     }
 
     private void bearbeiteKurs() {
@@ -478,7 +509,59 @@ private void openkurseHinzufuegenWindow() {
         mitgliederListModel.clear();
         for (Kurs kurs : kurse) {
             mitgliederListModel.addElement(kurs.toString());
+        }
     }
+
+    private void mitgliedZuKursHinzufuegen() {
+        int selectedIndex = mitgliederListe.getSelectedIndex();
+
+        if (selectedIndex != -1) {
+            Mitglied selectedMitglied = mitglieder.get(selectedIndex);
+
+            JFrame zuKursHinzufuegenFrame = new JFrame("Mitglied zu Kurs hinzufügen");
+            JButton hinzufuegenButton = new JButton("Hinzufügen");
+            JButton closeButton = new JButton("Abbrechen");
+
+            JComboBox<String> kurseComboBox = new JComboBox<>();
+            for (Kurs kurs : kurse) {
+                kurseComboBox.addItem(kurs.getName());
+            }
+
+            hinzufuegenButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int selectedKursIndex = kurseComboBox.getSelectedIndex();
+                    if (selectedKursIndex != -1) {
+                        Kurs selectedKurs = kurse.get(selectedKursIndex);
+                        selectedMitglied.kursBeitreten(selectedKurs);
+                        zuKursHinzufuegenFrame.dispose();
+
+                        updateMitgliederListe(); // Mitglieder Liste aktualisieren
+                    }
+                }
+            });
+
+            closeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openmitgliederHinzufuegenWindow();
+                    mitgliedZuKursHinzufuegen();
+                }
+            });
+
+            JPanel zuKursHinzufuegenPanel = new JPanel(new GridLayout(3, 2));
+            zuKursHinzufuegenPanel.add(new JLabel("Mitglied auswählen:"));
+            zuKursHinzufuegenPanel.add(new JLabel(selectedMitglied.getName()));
+            zuKursHinzufuegenPanel.add(new JLabel("Kurs auswählen:"));
+            zuKursHinzufuegenPanel.add(kurseComboBox);
+            zuKursHinzufuegenPanel.add(hinzufuegenButton);
+            zuKursHinzufuegenPanel.add(closeButton);
+
+            zuKursHinzufuegenFrame.getContentPane().add(zuKursHinzufuegenPanel);
+            zuKursHinzufuegenFrame.setSize(500, 200);
+            zuKursHinzufuegenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            zuKursHinzufuegenFrame.setVisible(true);
+        }
     }
 
     public static void main(String[] args) {

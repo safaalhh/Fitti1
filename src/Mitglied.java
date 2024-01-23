@@ -50,6 +50,10 @@ public class Mitglied {
         return kurse;
     }
 
+    public void kursBeitreten(Kurs kurs) {
+        kurs.mitgliedHinzufuegen(this);
+    }
+
     // Weitere Methoden
     public void anmeldenFürKurs(Kurs kurs) {
         kurse.add(kurs);
