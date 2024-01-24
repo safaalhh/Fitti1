@@ -7,7 +7,6 @@ public class Mitglied {
     private String geschlecht;
     private ArrayList<Kurs> kurse; //in eckigen klammer steht was in die Liste annimmt
 
-    // Konstruktor
     public Mitglied(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
         this.Mitgliednummer = Mitgliednummer;
         this.name = Name;

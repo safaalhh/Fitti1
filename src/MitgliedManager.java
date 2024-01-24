@@ -2,18 +2,18 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class MitgliedManager {
-    // Attribute
+
     private ArrayList<Mitglied> mitgliedListe;
     private ArrayList<Kurs> kursListe;
     private String filename;
 
-    // Constructor
+
     public MitgliedManager() {
         mitgliedListe = new ArrayList<Mitglied>();
         kursListe = new ArrayList<Kurs>();
         filename = "Mitglieder.csv";
     }
-    // Methoden
+
     public ArrayList<Mitglied> getMitgliedListe(){
         return mitgliedListe;
     }
@@ -23,7 +23,7 @@ public class MitgliedManager {
     }
 
     public Mitglied neuesMitgliedHinzufuegen(int Mitgliednummer, String Name, String Geburtsdatum, String Geschlecht) {
-        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht); //Parameter?
+        Mitglied tmpMitglied = new Mitglied(Mitgliednummer, Name, Geburtsdatum, Geschlecht);
         mitgliedListe.add(tmpMitglied);
         //this.mitgliedInCsvSpeichern(tmpMitglied);
         return tmpMitglied;

@@ -1,4 +1,4 @@
-import java.io.BufferedReader; // was ist das?? // io ist für lesen und schreiben //java.io steht für Input und Output für ein und Ausgabe von Datein
+import java.io.BufferedReader;  // io ist für lesen und schreiben
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,14 +9,14 @@ import java.util.Arrays;
 
 public class CsvReader {
 
-    public static String testFileName = "testFile.csv"; //Test?
+    public static String testFileName = "testFile.csv";
     private static String csvFitness = "mitglieder.csv"; // CSV Fitness ist unsere Hauptdatei
     private static String folderPrefix = "src/CSV-Records/"; //Pfad indem das gespeichert wird
     private static String mitgliedIDAlsStr;
 
-    public static ArrayList<ArrayList<String>> testReadCSVFile() { // ??
+    public static ArrayList<ArrayList<String>> testReadCSVFile() {
         return readCSVFile(testFileName);
-    } //
+    }
 
     public static ArrayList<ArrayList<String>> readCSVFile(String fileName) {
         ArrayList<ArrayList<String>> records = new ArrayList<>();
@@ -26,7 +26,7 @@ public class CsvReader {
                 String[] values = line.split(";");
                 records.add(new ArrayList<>(Arrays.asList(values)));
             }
-        } catch (FileNotFoundException exc) { // was ist catch?
+        } catch (FileNotFoundException exc) {
             System.err.println("Datei konnte nicht in csvReader gefunden werden()");
         } catch (IOException exc) {
             System.err.println("fehler beim Lesen in der csvReader Datei()");
@@ -66,7 +66,7 @@ public class CsvReader {
     public static boolean mitgliedIdVerfuegbar(int mitgliedID) { // überprüft ob mitglieder-ID in Datei vorhanden ist
         ArrayList<String> mitgliedIDs = getAllIds(csvFitness);
         var mitgliedIdAlsStr = Integer.toString(mitgliedID);
-        if (mitgliedIDs.contains(mitgliedIDAlsStr)) { // was ist hier das problem
+        if (mitgliedIDs.contains(mitgliedIDAlsStr)) {
             return false;
         }
         return true;
@@ -74,7 +74,7 @@ public class CsvReader {
 
     private static ArrayList<String> getAllIds(String filename) {
         return getAlleVonEinemInfoTyp(filename, "Id");
-    } //warum private?
+    }
 
     public static ArrayList<String> getColumn(String filename) {
         ArrayList<ArrayList<String>> mitglieder = readCSVFile(filename);

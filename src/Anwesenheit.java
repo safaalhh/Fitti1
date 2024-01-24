@@ -1,27 +1,26 @@
 import java.util.ArrayList;
 
 public class Anwesenheit {
-    // Attribute
+
     String mitglied;
     int startzeit;
     int endzeit;
     ArrayList<Zeiteintrag> zeiteintraege = new ArrayList<>();
     static ArrayList<Anwesenheit> anwesenheitszeiten = new ArrayList<>();
 
-    // Constructor
     public Anwesenheit(String mitglied, int startzeit, int endzeit) {
         this.mitglied = mitglied;
         this.startzeit = startzeit;
         this.endzeit = endzeit;
     }
 
-    // Method to add attendance
+    // Methode Anwesenheit hinzuzufügen
     public void anwesenheitHinzufuegen(String mitglied, int startzeit, int endzeit) {
         Anwesenheit eintrag = new Anwesenheit(mitglied, startzeit, endzeit);
         anwesenheitszeiten.add(eintrag);
     }
 
-    // Method to modify attendance
+    // Methode Anwesenheit zu verändern
     public void anwesenheitAendern(String mitglied, int index, int neueStartzeit, int neueEndzeit) {
         for (Anwesenheit eintrag : anwesenheitszeiten) {
             if (eintrag.mitglied.equals(mitglied)) {
@@ -36,7 +35,7 @@ public class Anwesenheit {
         }
     }
 
-    // Method to delete attendance
+    // Methode Anwesenheit zu löschen
     public void anwesenheitLoeschen(String mitglied, int index) {
         for (Anwesenheit eintrag : anwesenheitszeiten) {
             if (eintrag.mitglied.equals(mitglied)) {
@@ -49,7 +48,7 @@ public class Anwesenheit {
         }
     }
 
-    // Method to display attendance for a specific member
+    // Methode Anwesenheit für Mitglied anzuzeigen
     public void anzeigenAnwesenheitMitglied(String mitglied) {
         for (Anwesenheit eintrag : anwesenheitszeiten) {
             if (eintrag.mitglied.equals(mitglied)) {
@@ -63,7 +62,7 @@ public class Anwesenheit {
         }
     }
 
-    // Method to display total attendance time for a specific member
+    // Methode Gesamtanwesenheit zu Mitglied anzuzeigen
     public void anzeigenGesamteAnwesenheit(String mitglied) {
         for (Anwesenheit eintrag : anwesenheitszeiten) {
             if (eintrag.mitglied.equals(mitglied)) {

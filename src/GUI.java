@@ -24,8 +24,6 @@ public class GUI {
 
     public GUI() {
         mitgliederManager = new MitgliedManager();
-       // mitglieder = new ArrayList<>();
-       // kurse = new ArrayList<>(); // Initialisierung Kursliste
 
         mainFrame = new JFrame("FitFirst");
         mitgliederButton = new JButton("Mitglieder");
