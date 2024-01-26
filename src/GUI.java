@@ -93,9 +93,9 @@ public class GUI {
 
     private void openmitgliederAnzeigenWindow() {
         JFrame mitgliederAnzeigenFrame = new JFrame("Mitglieder - Mitglieder anzeigen");
-        JButton closeButton = new JButton("Zurück");
         JButton bearbeitenButton = new JButton("Mitglied bearbeiten");
         JButton loeschenButton = new JButton("Mitglied löschen");
+        JButton closeButton = new JButton("Zurück");
 
         closeButton.addActionListener(new ActionListener() {
             @Override
@@ -347,9 +347,9 @@ public class GUI {
 
     private void openkurseAnzeigenWindow() {
         JFrame kurseAnzeigenFrame = new JFrame("Kurse - Kurse anzeigen");
-        JButton closeButton = new JButton("Zurück");
         JButton bearbeitenButton = new JButton("Kurs bearbeiten");
         JButton loeschenButton = new JButton("Kurs löschen");
+        JButton closeButton = new JButton("Zurück");
 
         closeButton.addActionListener(new ActionListener() {
             @Override
