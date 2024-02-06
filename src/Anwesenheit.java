@@ -1,28 +1,36 @@
 import java.util.ArrayList;
 
 public class Anwesenheit {
-
+    private int dauer;
     String mitglied;
     int startzeit;
     int endzeit;
     ArrayList<Zeiteintrag> zeiteintraege = new ArrayList<>();
-    static ArrayList<Anwesenheit> anwesenheitszeiten = new ArrayList<>();
+    static ArrayList<Anwesenheit> anwesenheit = new ArrayList<>();
 
     public Anwesenheit(String mitglied, int startzeit, int endzeit) {
         this.mitglied = mitglied;
         this.startzeit = startzeit;
         this.endzeit = endzeit;
     }
-
+    public Anwesenheit(int dauer) {
+        this.dauer = dauer;
+    }
+    public int getDauer() {
+        return dauer;
+    }
+    public void setDauer(int dauer) {
+        this.dauer = dauer;
+    }
     // Methode Anwesenheit hinzuzufügen
     public void anwesenheitHinzufuegen(String mitglied, int startzeit, int endzeit) {
         Anwesenheit eintrag = new Anwesenheit(mitglied, startzeit, endzeit);
-        anwesenheitszeiten.add(eintrag);
+        anwesenheit.add(eintrag);
     }
 
     // Methode Anwesenheit zu verändern
     public void anwesenheitAendern(String mitglied, int index, int neueStartzeit, int neueEndzeit) {
-        for (Anwesenheit eintrag : anwesenheitszeiten) {
+        for (Anwesenheit eintrag : anwesenheit) {
             if (eintrag.mitglied.equals(mitglied)) {
                 ArrayList<Zeiteintrag> zeiteintraege = eintrag.zeiteintraege;
 
@@ -37,7 +45,7 @@ public class Anwesenheit {
 
     // Methode Anwesenheit zu löschen
     public void anwesenheitLoeschen(String mitglied, int index) {
-        for (Anwesenheit eintrag : anwesenheitszeiten) {
+        for (Anwesenheit eintrag : anwesenheit) {
             if (eintrag.mitglied.equals(mitglied)) {
                 ArrayList<Zeiteintrag> zeiteintraege = eintrag.zeiteintraege;
 
@@ -50,13 +58,12 @@ public class Anwesenheit {
 
     // Methode Anwesenheit für Mitglied anzuzeigen
     public void anzeigenAnwesenheitMitglied(String mitglied) {
-        for (Anwesenheit eintrag : anwesenheitszeiten) {
+        for (Anwesenheit eintrag : anwesenheit) {
             if (eintrag.mitglied.equals(mitglied)) {
                 ArrayList<Zeiteintrag> zeiteintraege = eintrag.zeiteintraege;
 
                 System.out.println("Anwesenheitszeiten für Mitglied " + mitglied + ":");
                 for (Zeiteintrag zeiteintra : zeiteintraege) {
-                    System.out.println("Startzeit: " + zeiteintra.startzeit + ", Endzeit: " + zeiteintra.endzeit);
                 }
             }
         }
@@ -64,7 +71,7 @@ public class Anwesenheit {
 
     // Methode Gesamtanwesenheit zu Mitglied anzuzeigen
     public void anzeigenGesamteAnwesenheit(String mitglied) {
-        for (Anwesenheit eintrag : anwesenheitszeiten) {
+        for (Anwesenheit eintrag : anwesenheit) {
             if (eintrag.mitglied.equals(mitglied)) {
                 ArrayList<Zeiteintrag> zeiteintraege = eintrag.zeiteintraege;
 
@@ -72,7 +79,6 @@ public class Anwesenheit {
                 for (Zeiteintrag zeiteintrag : zeiteintraege) {
                     gesamteAnwesenheitszeit += zeiteintrag.endzeit - zeiteintrag.startzeit;
                 }
-                System.out.println("Gesamte Anwesenheitszeit für Mitglied " + mitglied + ": " + gesamteAnwesenheitszeit);
             }
         }
     }

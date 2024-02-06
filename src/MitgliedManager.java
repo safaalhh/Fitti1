@@ -17,6 +17,23 @@ public class MitgliedManager {
     public ArrayList<Mitglied> getMitgliedListe(){
         return mitgliedListe;
     }
+    public ArrayList<Mitglied> getMitgliederByGeschlecht(String geschlecht) {
+        ArrayList<Mitglied> filteredMitglieder = new ArrayList<>();
+        for (Mitglied mitglied : mitgliedListe) {
+            if (mitglied.getGeschlecht().equalsIgnoreCase(geschlecht)) {
+                filteredMitglieder.add(mitglied);
+            }
+        }
+        return filteredMitglieder;
+    }
+
+// Other methods...
+
+    public ArrayList<Mitglied> getMitgliederListe() {
+        return mitgliedListe;
+    }
+
+
 
     public ArrayList<Kurs> getKursListe(){
         return kursListe;
@@ -95,6 +112,8 @@ public class MitgliedManager {
         }
     }
 }
+
+
 
 
 

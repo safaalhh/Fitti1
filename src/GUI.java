@@ -11,23 +11,31 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 public class GUI {
-    private ArrayList<Kurs> selectedKurse = new ArrayList<>();
+    private MitgliedManager mitgliederManager;
     private JList<String> mitgliederListe;
     private DefaultListModel<String> mitgliederListModel;
-    private MitgliedManager mitgliederManager;
-
+    private JFrame mainFrame;
     private JButton mitgliederButton;
     private JButton kurseButton;
-    private JFrame mainFrame;
-
-    private String[] geschlechtOptions = {"m", "w"};
+    private String[] geschlechtOptions = {"m", "w","Alle"};
+    private ArrayList<Kurs> selectedKurse = new ArrayList<>();
 
     public GUI() {
+
         mitgliederManager = new MitgliedManager();
 
         mainFrame = new JFrame("FitFirst");
         mitgliederButton = new JButton("Mitglieder");
         kurseButton = new JButton("Kurse");
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.add(mitgliederButton);
+        mainPanel.add(kurseButton);
+
+        mainFrame.getContentPane().add(mainPanel);
+        mainFrame.setSize(500, 500);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setVisible(true);
 
         mitgliederButton.addActionListener(new ActionListener() {
             @Override
@@ -42,22 +50,23 @@ public class GUI {
                 openKurseWindow();
             }
         });
-
-        JPanel mainPanel = new JPanel();
-        mainPanel.add(mitgliederButton);
-        mainPanel.add(kurseButton);
-
-        mainFrame.getContentPane().add(mainPanel);
-        mainFrame.setSize(500, 500);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setVisible(true);
     }
 
     private void openMitgliederWindow() {
         JFrame mitgliederFrame = new JFrame("Mitglieder");
-        JButton closeButton = new JButton("Zurück");
         JButton mitgliederAnzeigenButton = new JButton("Mitglieder anzeigen");
         JButton mitgliederHinzufuegenButton = new JButton("Mitglieder hinzufügen");
+        JButton closeButton = new JButton("Zurück");
+
+        JPanel mitgliederPanel = new JPanel();
+        mitgliederPanel.add(mitgliederAnzeigenButton);
+        mitgliederPanel.add(mitgliederHinzufuegenButton);
+        mitgliederPanel.add(closeButton);
+
+        mitgliederFrame.getContentPane().add(mitgliederPanel);
+        mitgliederFrame.setSize(500, 500);
+        mitgliederFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        mitgliederFrame.setVisible(true);
 
         mitgliederAnzeigenButton.addActionListener(new ActionListener() {
             @Override
@@ -79,16 +88,6 @@ public class GUI {
                 mitgliederFrame.dispose();
             }
         });
-
-        JPanel mitgliederPanel = new JPanel();
-        mitgliederPanel.add(mitgliederAnzeigenButton);
-        mitgliederPanel.add(mitgliederHinzufuegenButton);
-        mitgliederPanel.add(closeButton);
-
-        mitgliederFrame.getContentPane().add(mitgliederPanel);
-        mitgliederFrame.setSize(500, 500);
-        mitgliederFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        mitgliederFrame.setVisible(true);
     }
 
     private void openmitgliederAnzeigenWindow() {
@@ -118,46 +117,73 @@ public class GUI {
             }
         });
 
+        JComboBox<String> geschlechtFilterComboBox = new JComboBox<>(geschlechtOptions);
+        geschlechtFilterComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedGeschlecht = (String) geschlechtFilterComboBox.getSelectedItem();
+                ArrayList<Mitglied> filteredMitglieder;
+
+                if (selectedGeschlecht.equals("Alle")) {
+                    filteredMitglieder = mitgliederManager.getMitgliederListe();
+                } else {
+                    filteredMitglieder = mitgliederManager.getMitgliederByGeschlecht(selectedGeschlecht);
+                }
+
+                updateMitgliederListe(filteredMitglieder);
+            }
+        });
+
         mitgliederListModel = new DefaultListModel<>();
         mitgliederListe = new JList<>(mitgliederListModel);
         mitgliederListe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JPanel mitgliederPanel = new JPanel(new BorderLayout());
         mitgliederPanel.add(new JScrollPane(mitgliederListe), BorderLayout.CENTER);
+
         mitgliederPanel.add(bearbeitenButton, BorderLayout.WEST);
         mitgliederPanel.add(loeschenButton, BorderLayout.EAST);
         mitgliederPanel.add(closeButton, BorderLayout.SOUTH);
+        mitgliederPanel.add(geschlechtFilterComboBox, BorderLayout.NORTH);
 
         updateMitgliederListe();
 
         mitgliederAnzeigenFrame.getContentPane().add(mitgliederPanel);
-        mitgliederAnzeigenFrame.setSize(700, 500);
+        mitgliederAnzeigenFrame.setSize(2000, 500);
         mitgliederAnzeigenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mitgliederAnzeigenFrame.setVisible(true);
     }
 
     private void bearbeiteMitglied() {
-
         int selectedIndex = mitgliederListe.getSelectedIndex();
 
         if (selectedIndex != -1) {
-            Mitglied selectedMitglied = mitgliederManager.getMitgliedListe().get(selectedIndex);
+            Mitglied selectedMitglied = mitgliederManager.getMitgliederListe().get(selectedIndex);
 
-            JFrame bearbeitenFrame = new JFrame("Mitglieder bearbeiten");
+            JFrame bearbeitenFrame = new JFrame("Mitglieder - Mitglieder bearbeiten");
             JButton speicherButton = new JButton("Speichern");
             JButton closeButton = new JButton("Abbrechen");
 
-            JTextField mitgliedNummerField = new JTextField(selectedMitglied.getMitgliedNummer());
-            JTextField nameField = new JTextField(selectedMitglied.getName());
-            JTextField geburtsdatumField = new JTextField(selectedMitglied.getGeburtsdatum());
+            JTextField mitgliedNummerField = new JTextField();
+            mitgliedNummerField.setText(String.valueOf(selectedMitglied.getMitgliedNummer()));
+            JTextField nameField = new JTextField();
+            nameField.setText(selectedMitglied.getName());
+            JTextField geburtsdatumField = new JTextField();
+            geburtsdatumField.setText(selectedMitglied.getGeburtsdatum());
             JComboBox<String> geschlechtComboBox = new JComboBox<>(geschlechtOptions);
-            geschlechtComboBox.setSelectedItem(String.valueOf(selectedMitglied.getGeschlecht()));
-            JTextField kurseField = new JTextField();
+            geschlechtComboBox.setSelectedItem(selectedMitglied.getGeschlecht());
+
+            JTextField anwesenheitszeitField = new JTextField();
+
+            JComboBox<String> kurseComboBox = new JComboBox<>();
+            for (Kurs kurs : mitgliederManager.getKursListe()) {
+                kurseComboBox.addItem(kurs.getName());
+            }
 
             for (Kurs kurs : selectedMitglied.getKurse()) {
-                kurseField.setText(kurseField.getText() + kurs.getName() + ", ");
-
+                kurseComboBox.setSelectedItem(kurs.getName());
             }
+
             speicherButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -165,6 +191,17 @@ public class GUI {
                     selectedMitglied.setName(nameField.getText());
                     selectedMitglied.setGeburtsdatum(geburtsdatumField.getText());
                     selectedMitglied.setGeschlecht((String) geschlechtComboBox.getSelectedItem());
+
+                    int anwesenheitszeit = Integer.parseInt(anwesenheitszeitField.getText());
+                    selectedMitglied.addAnwesenheitszeit(anwesenheitszeit);
+
+                    selectedMitglied.getKurse().clear();
+                    String selectedCourseName = (String) kurseComboBox.getSelectedItem();
+                    Kurs selectedKurs = mitgliederManager.getKursByName(selectedCourseName);
+
+                    if (selectedKurs != null) {
+                        selectedMitglied.getKurse().add(selectedKurs);
+                    }
 
                     bearbeitenFrame.dispose();
 
@@ -179,7 +216,7 @@ public class GUI {
                 }
             });
 
-            JPanel bearbeitenPanel = new JPanel(new GridLayout(7, 2));
+            JPanel bearbeitenPanel = new JPanel(new GridLayout(9, 2));
             bearbeitenPanel.add(new JLabel("Mitgliedsnummer:"));
             bearbeitenPanel.add(mitgliedNummerField);
             bearbeitenPanel.add(new JLabel("Name:"));
@@ -189,7 +226,10 @@ public class GUI {
             bearbeitenPanel.add(new JLabel("Geschlecht:"));
             bearbeitenPanel.add(geschlechtComboBox);
             bearbeitenPanel.add(new JLabel("Fitnesskurse:"));
-            bearbeitenPanel.add(kurseField);
+            bearbeitenPanel.add(kurseComboBox);
+            bearbeitenPanel.add(new JLabel("Anwesenheitszeit hinzufügen [min]:"));
+            bearbeitenPanel.add(anwesenheitszeitField);
+
             bearbeitenPanel.add(speicherButton);
             bearbeitenPanel.add(closeButton);
 
@@ -210,11 +250,41 @@ public class GUI {
     }
 
     private void updateMitgliederListe() {
-        mitgliederListModel.clear();
-        for (Mitglied mitglied : mitgliederManager.getMitgliedListe()) {
-            mitgliederListModel.addElement(mitglied.toString());
-        }
+        updateMitgliederListe(mitgliederManager.getMitgliederListe());
     }
+
+    private void updateMitgliederListe(ArrayList<Mitglied> mitgliederList) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (mitgliederListModel == null) {
+                    mitgliederListModel = new DefaultListModel<>();
+                }
+                mitgliederListModel.clear();
+
+                if (mitgliederList != null) {
+                    for (Mitglied mitglied : mitgliederList) {
+                        StringBuilder displayText = new StringBuilder();
+                        displayText.append("Mitgliedsnummer: ").append(mitglied.getMitgliedNummer());
+                        displayText.append(", Name: ").append(mitglied.getName());
+                        displayText.append(", Geburtsdatum: ").append(mitglied.getGeburtsdatum());
+                        displayText.append(", Geschlecht: ").append(mitglied.getGeschlecht());
+                        displayText.append(", Fitnesskurse: ");
+                        displayText.append(", Gesamtanwesenheitszeit [min]: ").append(mitglied.getGesamtAnwesenheitszeit());
+                        mitgliederListModel.addElement(displayText.toString());
+
+                        for (Kurs kurs : mitglied.getKurse()) {
+                            displayText.append(kurs.getName()).append(", ");
+                        }
+                        if (!mitglied.getKurse().isEmpty()) {
+                            displayText.setLength(displayText.length() - 2);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 
     private void openmitgliederHinzufuegenWindow() {
 
@@ -259,9 +329,6 @@ public class GUI {
                 selectedKurse.add(mitgliederManager.getKursByName(selectedKursName));
             }
         });
-
-
-
 
         closeButton.addActionListener(new ActionListener() {
             @Override
@@ -385,7 +452,7 @@ public class GUI {
         updateKurseListe();
 
         kurseAnzeigenFrame.getContentPane().add(kursePanel);
-        kurseAnzeigenFrame.setSize(700, 500);
+        kurseAnzeigenFrame.setSize(2000, 500);
         kurseAnzeigenFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         kurseAnzeigenFrame.setVisible(true);
     }
@@ -514,7 +581,7 @@ public class GUI {
                     int selectedKursIndex = kurseComboBox.getSelectedIndex();
                     if (selectedKursIndex != -1) {
                         Kurs selectedKurs = mitgliederManager.getKursListe().get(selectedKursIndex);
-                        mitgliederManager.mitgliedZuKursHinzufuegen(selectedMitglied,selectedKurs);
+                        mitgliederManager.mitgliedZuKursHinzufuegen(selectedMitglied, selectedKurs);
                         selectedMitglied.kursBeitreten(selectedKurs);
                         zuKursHinzufuegenFrame.dispose();
 
@@ -536,6 +603,7 @@ public class GUI {
             zuKursHinzufuegenPanel.add(new JLabel(selectedMitglied.getName()));
             zuKursHinzufuegenPanel.add(new JLabel("Kurs auswählen:"));
             zuKursHinzufuegenPanel.add(kurseComboBox);
+
             zuKursHinzufuegenPanel.add(hinzufuegenButton);
             zuKursHinzufuegenPanel.add(closeButton);
 
@@ -545,6 +613,4 @@ public class GUI {
             zuKursHinzufuegenFrame.setVisible(true);
         }
     }
-
-
 }
